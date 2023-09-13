@@ -16,15 +16,13 @@ The third lesson in the series, _Helper Methods Part 3_, has a separate project 
 
 Before we go further, let's get something clear about testing.
 
-We are not writing as many automated tests for from here on; only a few basic ones to check your progress with `rake grade`. I want you to get in the habit of writing your own automated tests. So try it! If you can get it, that's great. If you can't get it, that's okay because there's examples already in the project that you can look at and then copy, paste, and use.
+From here on, we are not writing as many automated tests for you; only a few basic ones to check your progress with `rake grade`. I want you to get in the habit of writing your own automated tests. 
 
-You should at least attempt writing your own tests to try and understand where to put the file for your tests, how to run the tests, etc. It is especially important in this context to have automated tests, because the whole point here is that we're refactoring our AD1 code. We're making it better while keeping the functionality exactly the same, so we want to be sure we don't break anything!
-
-Every time we made changes during the Getting Started lesson, we had to click through everything to check our work. Add a movie, delete a movie, edit a movie, did errors display, did validations pass, etc. Once you get bored of manually testing your app, you'll understand the value of having an automated test suite that you can just run when you're trying to improve a code base without introducing bugs into it.
+You should at least attempt writing your own tests to try and understand where to put the files for your tests, how to run the tests, etc. It is especially important in this context to have automated tests, because the whole point here is that we're refactoring our previous code. We're making it better while keeping the functionality exactly the same, so we want to be sure we don't break anything!
 
 Read Sections 1, 2, 4, 5, 6, and 7 of the [Rails Guide on Testing](https://guides.RubyonRails.org/testing.html). These are the kinds of tests that we write most frequently.
 
-In the Helper Methods Part 1 project, we have one fully functional web resource, `movies`. Create a test file, `test/system/movie_test.rb`, and take a stab at writing some System tests in it to lock down the current functionality of the application. For example, try adding a test that checks to make sure the URL `/movies` has an `<h1>` element on it. Run your tests with:
+In the project, we have one fully functional web resource, `movies`. Create a test file, `test/system/movie_test.rb`, and take a stab at writing some System tests in it to lock down the current functionality of the application. For example, try adding a test that checks to make sure the URL `/movies` has an `<h1>` element on it. Run your tests with:
 
 ```
 rails test test/system/movie_test.rb
