@@ -20,7 +20,7 @@ From here on, we are not writing as many automated tests for you; only a few bas
 
 The `rake grade` specs are _already all passing_. As we refactor for the rest of the project, you should run the tests periodically to ensure you didn’t break anything.
 
-Take a moment and examine one of test blocks in the `spec/features/1_basic_spec.rb` file (written with the [RSpec testing framework gem](https://rspec.info/)):
+Take a moment and examine one of test blocks in the `spec/features/1_basic_spec.rb` file:
 
 ```ruby
 # ...
@@ -40,6 +40,10 @@ describe "The /movies/new page" do
 ```
 
 We `describe` a URL path that we want to test, in this case `/movies/new`. Then we run a test that checks that `it "creates a movies successfully"`. This test block begins by `visit`ing the URL path, then the test `fill`(s)`_in` the "Title" and "Description" and `click`(s the)`_button` "Create movie". Finally, the test `expect`s the ending `page` to `have`(the)`_content`: "Movie created successfully" and fill fail if this is not found!
+
+<aside markdown="1">
+Our specs are written with the [RSpec testing framework gem](https://rspec.info/). There is also the Minitest framework that comes out of the box with Rails ([see the official guide](https://guides.rubyonrails.org/testing.html)). We wrote our tests with RSpec because it is somewhat more flexible and allows for specific things we do to make `rake grade` provide nicer feedback for learners.
+</aside>
 
 Just like you would do by manually clicking through the page to check your work, but the automated test does it all for you, and you can rerun it quickly anytime you make a change to the code. Yay!
 
