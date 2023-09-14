@@ -20,7 +20,7 @@ From here on, we are not writing as many automated tests for you; only a few bas
 
 The `rake grade` specs are _already all passing_. As we refactor for the rest of the project, you should run the tests periodically to ensure you didn’t break anything.
 
-Take a moment and examine one of test blocks in the `spec/features/1_basic_spec.rb` file:
+Take a moment and examine one of test blocks in the `spec/features/1_basic_spec.rb` file (written with the [RSpec testing framework gem](https://rspec.info/)):
 
 ```ruby
 # ...
