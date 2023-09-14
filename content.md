@@ -434,44 +434,31 @@ Once you've changed all the syntax, and confirmed you didn't break anything by c
 
 ## Shorten template names
 
-Let's do another thing to make our code more concise and in line with what you'll see professional developers using. Whenever we render a template in our `movies` controller, we were writing out the whole name:
+Let's do another thing to make our code more professional. Whenever we render a template in our `movies` controller, we were writing out the whole name:
 
-```ruby
+```ruby{7}
 # app/controller/movies_controller.rb
 
-  ...
-  def new
-    @the_movie = Movie.new
-
-    render template: "movies/new.html.erb"
-  end
-  ...
-```
-{: mark_lines="7"}
-
-Actually, we don't need the extension, Rails assumes the file is in `.html.erb` format, so we can just write:
-
-```ruby
+  # ...
   def new
     @the_movie = Movie.new
 
     render template: "movies/new"
   end
+  # ...
 ```
-{: mark_lines="4"}
 
-Also, we don't actually need `template:` because if you pass the `render` method a single string argument, it assumes that is a view template!
+We don't actually need `template:` because if you pass the `render` method a single string argument, it assumes that is a view template!
 
-```ruby
+```ruby{4}
   def new
     @the_movie = Movie.new
 
     render "movies/new"
   end
 ```
-{: mark_lines="4"}
 
-Next, if the folder name that the view templates are located inside of, matches the name of the controller, and if the action name matches the name of the template, we can just get rid of the whole string! (And the method!)
+Next, if the folder name that the view templates are located inside of matches the name of the controller, and if the action name matches the name of the template, we can just get rid of the whole string! (And the method!)
 
 ```ruby
   def new
@@ -483,63 +470,21 @@ Wow! Rails looks at the controller `MoviesController` and assumes the view templ
 
 Try and go through the code in the controller and delete any render statements _where the template matches the action name_ (only when it matches, Rails won't figure out when it doesn't).
 
-One hint, in the `index` action, where we have:
+Once you finish that refactoring, make sure your app still works, and then git commit.
 
-```ruby
-  ...
-  def index
-    ...
-      format.html do
-        render template: "movies/index.html.erb"
-      end
-    end
-  end
-```
-{: mark_lines="4-6"}
-
-We can just get rid of that whole loop block:
-
-```ruby
-  ...
-  def index
-    ...
-      format.html
-    end
-  end
-```
-{: mark_lines="4"}
-
-To just indicate that we support the HTML format with this action.
-
-Once you finish that refactoring, make sure you app still works, and do a git commit!
-
-## `link_to` Helper Method 00:35:30 to 00:43:28
+## `link_to` helper method
 
 Next we're going to talk about a very, very useful helper method called `link_to`, that will replace all of our plain HTML `<a>` link elements. 
 
 This is the first example of a helper method that produces an actual HTML element. 
 
-Let's experiment with a simple example with some dummy code in our `index` view template:
+Let's experiment with a simple example with some dummy code in our `app/views/movies/index.html.erb` view template:
 
 ```erb
-<!-- app/views/movies/index.html.erb -->
-
-<h1>
-  List of all movies
-</h1>
-
-<hr>
-
-<div>
-  <a href="<%= new_movie_path %>">Add a new movie</a>
-
-  <%= link_to "Go to Google", "https://www.google.com" %>
-</div>
-...
+<%= link_to "Go to Google", "https://www.google.com" %>
 ```
-{: mark_lines="12"}
 
-We have the method (`link_to`) and two arguments (remember, we omitted the paranetheses from `link_to()`): Some text to display ("Go to Google"), and the URL (google). 
+We have the method (`link_to`) and two arguments (remember, we omitted the parentheses from `link_to()`): Some text to display ("Go to Google"), and the URL (google). 
 
 Refresh `/movies` in the live app, and you will see a working link. And if you view source on the page, you should see:
 
@@ -547,54 +492,31 @@ Refresh `/movies` in the live app, and you will see a working link. And if you v
 <a href="https://www.google.com">Go to Google</a>
 ```
 
-Just as we would have written in plain HTML, but now we're letting Rails do that for us. Now let's see how that benefits our code by changing the "Add a new movie" link (we can remove our Google link):
+Just as we would have written in plain HTML, but now we're letting Rails do that for us. 
+
+Let's see how that benefits our code by changing the "Add a new movie" link (we can remove our Google link):
 
 ```erb
-<!-- app/views/movies/index.html.erb -->
-
-<h1>
-  List of all movies
-</h1>
-
-<hr>
-
-<div>
   <!-- <a href="<%= new_movie_path %>">Add a new movie</a> -->
-  <%= link_to "Add a new movie", new_movie_path %>
-</div>
-...
-```
-{: mark_lines="10-11"}
 
-Try out the new link and view source on it. Beautiful. So now we have a nice link that doesn't rely on us writing any HTML, just embedded Ruby. From now on, our goal is going to be, to never write a raw HTML element in our view templates. 
+  <%= link_to "Add a new movie", new_movie_path %>
+```
+
+Try out the new link and view source on it. Beautiful. So now we have a nice link that doesn't rely on us writing any HTML, just embedded Ruby.
 
 Let's look at a really cool benefit from doing this replacement. Look at the "Show details" link:
 
 ```erb
-<!-- app/views/movies/index.html.erb -->
-
-...
-    <td>
-      <%= link_to "Show details", movie_path(a_movie) %>
-    </td>
-...
+<%= link_to "Show details", movie_path(a_movie) %>
 ```
-{: mark_lines="5"}
 
 We have our helper method, the text to display, and the path to link to. Now here's where people start to refer to the "Rails Magic".
 
 What if I provide the second argument not as the `movie_path(a_movie)`, which returns the string `"/movie/ID"`, but rather just the `ActiveRecord` object _itself_:
 
 ```erb
-<!-- app/views/movies/index.html.erb -->
-
-...
-    <td>
-      <%= link_to "Show details", a_movie %>
-    </td>
-...
+<%= link_to "Show details", a_movie %>
 ```
-{: mark_lines="5"}
 
 This will work, and produce the correct link! Try it in the live app.
 
@@ -606,4 +528,6 @@ a_movie.class.downcase + "_url"
 
 So `link_to` looks for a named route helper method that matches the name of `a_movie`'s class (`Movie`), because that's the _convention_. If you have a table called `movies`, you're going to have RESTful routes with names like `"/movies"` and `"/movie/ID"`. If you're doing everything by _convention_, this shorthand works!
 
-Take a moment now to go through and replace `<a>` elements with our `link_to` embedded Ruby in the view templates: `index.html.erb`, `show.html.erb`, `new.html.erb`, and `edit.html.erb`. And remember to git commit when you are done.
+Take a moment now to go through and replace `<a>` elements with our `link_to` embedded Ruby in the view templates: `index.html.erb`, `show.html.erb`, `new.html.erb`, and `edit.html.erb`. And remember to `rake grade` and git commit when you are done.
+
+___
