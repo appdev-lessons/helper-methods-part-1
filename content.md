@@ -31,15 +31,15 @@ describe "The /movies/new page" do
 
     fill_in "Title", with: "My test movie"
     fill_in "Description", with: "description"
-    click_button "Create movie"
+    click_button "Create Movie"
 
     expect(page).to have_content("Movie created successfully."),
-      "Expected to fill in the new movie form, click 'Create movie', and be redirected to the movie index with a success notice"
+      "Expected to fill in the new movie form, click 'Create Movie', and be redirected to the movie index with a success notice"
   end
 # ...
 ```
 
-We `describe` a URL path that we want to test, in this case `/movies/new`. Then we run a test that checks that `it "creates a movies successfully"`. This test block begins by `visit`ing the URL path, then the test `fill`(s)`_in` the "Title" and "Description" and `click`(s the)`_button` "Create movie". Finally, the test `expect`s the ending `page` to `have`(the)`_content`: "Movie created successfully" and fill fail if this is not found!
+We `describe` a URL path that we want to test, in this case `/movies/new`. Then we run a test that checks that `it "creates a movies successfully"`. This test block begins by `visit`ing the URL path, then the test `fill`(s)`_in` the "Title" and "Description" and `click`(s the)`_button` "Create Movie". Finally, the test `expect`s the ending `page` to `have`(the)`_content`: "Movie created successfully" and fill fail if this is not found!
 
 <aside markdown="1">
 Our specs are written with the [RSpec testing framework gem](https://rspec.info/). There is also the Minitest framework that comes out of the box with Rails ([see the official guide](https://guides.rubyonrails.org/testing.html)). We wrote our tests with RSpec because it is somewhat more flexible and allows for specific things we do to make `rake grade` provide nicer feedback for learners.
