@@ -225,7 +225,7 @@ With our new route helper methods, we're never going to refer to these paths as 
 
 Now let's get these names down per the conventions that most Rails developers use:
 
-```ruby
+```ruby{7,8,12,16}
 # config/routes.rb
 
 Rails.application.routes.draw do
@@ -250,7 +250,7 @@ Rails.application.routes.draw do
 end
 ```
 
-Note that we don't need to define methods twice for paths that already have a method defined. These methods just return a string with the path name, they ignore the HTTP verb, so there's no difference between naming a route helper method for `delete` or `patch` above; both will return `"/movies/ID"`. We defined the method `movie_path` and `movie_url` for all three `get`, `patch`, and `delete` HTTP verbs for this route just by adding it once.
+We don't need to define methods twice for paths that already have a method defined. These methods just return a string with the path name, they ignore the HTTP verb, so there's no difference between naming a route helper method for `delete` or `patch` above; both will return `"/movies/ID"`. We defined the method `movie_path` and `movie_url` for all three `get`, `patch`, and `delete` HTTP verbs for this route just by adding it once.
 
 That's it! We've now provided names for all of our routes. Now we want to use these every single place in our application where we are using string paths.
 
@@ -290,59 +290,32 @@ Now that we gave names to our routes, we're going to go through and find every r
 
 For instance, at the bottom the `<table>` in the `index` view template:
 
-```erb
+```erb{5}
 <!-- app/views/movies/index.html.erb -->
 
-...
-    <td>
-      <%= time_ago_in_words(a_movie.updated_at) %> ago
-    </td>
-
+<!-- ... -->
     <td>
       <a href="/movies/<%= a_movie.id %>">
         Show details
       </a>
     </td>
-  </tr>
-  <% end %>
-</table>
+<!-- ... -->
 ```
-{: mark_lines="9"}
 
 Should be:
 
 ```erb
-<!-- app/views/movies/index.html.erb -->
-
-...
-    <td>
-      <%= time_ago_in_words(a_movie.updated_at) %> ago
-    </td>
-
-    <td>
       <a href="<%= movie_path(a_movie.id) %>">
-        Show details
-      </a>
-    </td>
-  </tr>
-  <% end %>
-</table>
 ```
-{: mark_lines="9"}
 
 We supply the movie ID as an argument to our new method. And if we try and refresh our live app and click one of the "Show details" links on the `/movies` page, it should work. We can also "view source" and see the HTML we expect in that link location: `"/movies/ID"`. Great!
 
-Now on to the `show` template for the details page, there's three links near the top to change:
+Now on to the `show` template, there's three links near the top to change:
 
-```erb
+```erb{6,12,18}
 <!-- app/views/movies/show.html.erb -->
 
-<div>
-  <div>
-    <h1>
-      Movie #<%= @the_movie.id %> details
-    </h1>
-
+<!-- ... -->
     <div>
       <div>
         <a href="/movies">
@@ -352,31 +325,25 @@ Now on to the `show` template for the details page, there's three links near the
 
       <div>
         <a href="/movies/<%= @the_movie.id %>/edit">
-          Edit Movie
+          Edit movie
         </a>
       </div>
 
       <div>
-        <a href="/movies/<%= @the_movie.id %>" data-method="delete">
-          Delete Movie
+        <a href="/movies/<%= @the_movie.id %>" data-turbo-method="delete">
+          Delete movie
         </a>
       </div>
     </div>
-...
+<!-- ... -->
 ```
-{: mark_lines="11 17 23"}
 
 Those index, edit, and delete links should be using the helper methods:
 
-```erb
+```erb{6,12,18}
 <!-- app/views/movies/show.html.erb -->
 
-<div>
-  <div>
-    <h1>
-      Movie #<%= @the_movie.id %> details
-    </h1>
-
+<!-- ... -->
     <div>
       <div>
         <a href="<%= movies_path %>">
@@ -386,55 +353,28 @@ Those index, edit, and delete links should be using the helper methods:
 
       <div>
         <a href="<%= edit_movie_path(@the_movie.id) %>">
-          Edit Movie
+          Edit movie
         </a>
       </div>
 
       <div>
-        <a href="<%= movie_path(@the_movie.id) %>" data-method="delete">
-          Delete Movie
+        <a href="<%= movie_path(@the_movie.id) %>" data-turbo-method="delete">
+          Delete movie
         </a>
       </div>
     </div>
-...
+<!-- ... -->
 ```
-{: mark_lines="11 17 23"}
 
 Again, we supply arguments to the helper methods that need an ID number.
 
 Test those links out manually to be sure everything worked.
 
-And finally on the `new` and `edit` pages, we'll make two changes:
+Make the last two changes on the `new` and `edit` pages in the form `action=""` attribute.
 
-```erb
-<!-- app/views/movies/new.html.erb -->
+---
 
-<h1>New movie</h1>
-
-<% @the_movie.errors.full_messages.each do |message| %>
-  <p style="color: red;"><%= message %></p>
-<% end %>
-
-<form action="<%= movies_path %>" method="post">
-...
-```
-{: mark_lines="9"}
-
-```erb
-<!-- app/views/movies/edit.html.erb -->
-
-<h1>Edit movie</h1>
-
-<% @the_movie.errors.full_messages.each do |message| %>
-  <p style="color: red;"><%= message %></p>
-<% end %>
-
-<form action="<%= movie_path(@the_movie.id) %>" method="post">
-...
-```
-{: mark_lines="9"}
-
-Now we've seen that there's only one name (`movie_path(id)`) for a single movie resource, and then there's three actions that modify that single movie resource with different HTTP verbs: `post` to show details, `patch` to edit, and `delete` to destroy. 
+Now we've seen that there's only one name (`movie_path(id)`) for a single movie resource, and then there's three actions that modify that single movie resource with different HTTP verbs: `get` to show details, `patch` to edit, and `delete` to destroy. 
 
 Now here's something cool. Wherever we wrote:
 
@@ -442,21 +382,21 @@ Now here's something cool. Wherever we wrote:
 movie_path(@the_movie.id)
 ```
 
-We can be bit more concice and omit the `.id`:
+We can be a bit more concise and omit the `.id`:
 
 ```ruby
 movie_path(@the_movie)
 ```
 
-If we just give `movie_path` an instance of `ActiveRecord` Rails will figure out the ID number for us by searching that record for the `id` column. Try and go back through the view templates and remove the `.id` for that helper method.
+If we just give `movie_path` an instance of `ActiveRecord`, then Rails will figure out the ID number for us by searching that record for the `id` column. Go back through the view templates and remove the `.id` for that helper method.
 
 Now we need to clean up the routes in our `app/controllers/movies_controller.rb` file, since we were using them a lot for redirects. For instance, in the `create` action:
 
-```ruby
+```ruby{12}
 # app/controllers/movies_controller.rb
 
 class MoviesController < ApplicationController
-  ...
+  # ...
   def create
     @the_movie = Movie.new
     @the_movie.title = params.fetch("query_title")
@@ -466,18 +406,17 @@ class MoviesController < ApplicationController
       @the_movie.save
       redirect_to(movies_url, { :notice => "Movie created successfully." })
     else
-      render template: "movies/new.html.erb"
+      render template: "movies/new"
     end
   end
-  ...
+  # ...
 ```
-{: mark_lines="12"}
 
-Wait! Why did we change `"/movies"` in that `redirect_to` after the save to `movies_url`, rather than the `movies_path` we've been using? We have both methods available to us, and technically, we should only use paths on the client facing view templates, whereas. But, when we're sending responses back, we should use the fully qualified URL, including the domain name.
+Wait! Why did we change `"/movies"` in that `redirect_to` to `movies_url`, rather than the `movies_path` we've been using? Technically we should only use paths on the client facing view templates. But, when we're sending responses back, we should use the fully qualified URL, including the domain name.
 
 Can you find the other places in the code where we need to change the path to the `_url` helper method? (Hint: look for any `redirect_to`s, and remember `movie_url` takes an argument of the `ActiveRecord` instance with or without the `.id`.) 
 
-While we're at it in the `movies_controller.rb` file, try to go through and change all of the old syntax to our new syntax. For instance, in the `create` action, this:
+While we're at it, in the `movies_controller.rb` file, try to go through and change all of the old syntax to our new syntax. For instance, in the `create` action, this:
 
 ```ruby
 redirect_to(movies_url, { :notice => "Movie created successfully." })
@@ -491,9 +430,9 @@ redirect_to movies_url, notice: "Movie created successfully."
 
 We won't need to go back and change things like this going forward, because we'll always be writing code from the get go with our new syntax.
 
-Once you've changed all the syntax, and confirmed you didn't break anything by clicking around in the live app or by running some automated tests, do a git commit.
+Once you've changed all the syntax, and confirmed you didn't break anything by clicking around in the live app or by running some automated tests with `rake grade`, then make a git commit.
 
-## Shorten Template Names 00:32:30 to 00:35:30
+## Shorten template names
 
 Let's do another thing to make our code more concise and in line with what you'll see professional developers using. Whenever we render a template in our `movies` controller, we were writing out the whole name:
 
