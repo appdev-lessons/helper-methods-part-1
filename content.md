@@ -531,6 +531,19 @@ a_movie.class.downcase + "_url"
 
 So `link_to` looks for a named route helper method that matches the name of `a_movie`'s class (`Movie`), because that's the _convention_. If you have a table called `movies`, you're going to have RESTful routes with names like `"/movies"` and `"/movie/ID"`. If you're doing everything by _convention_, this shorthand works!
 
-Take a moment now to go through and replace `<a>` elements with our `link_to` embedded Ruby in the view templates: `index.html.erb`, `show.html.erb`, `new.html.erb`, and `edit.html.erb`. And remember to `rake grade` and git commit when you are done.
+Take a moment now to go through and replace `<a>` elements with our `link_to` embedded Ruby in the view templates: `index.html.erb`, `show.html.erb`, `new.html.erb`, and `edit.html.erb`.
+
+<div class="bg-red-100 py-1 px-5 bleed-full" markdown="1">
+
+Your delete link should end up like:
+
+```erb
+<%= link_to "Delete Movie", @movie, data: { turbo_method: :delete } %>
+```
+
+with the `data: { turbo_method: :delete }` argument.
+</div>
+
+Remember to `rake grade` and git commit when you are done.
 
 ___
