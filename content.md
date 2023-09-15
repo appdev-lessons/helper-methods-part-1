@@ -1,4 +1,4 @@
-# Helper Methods Part 1
+# Helper Methods Part 1: Named routes and `link_to`
 
 ## Getting started
 
