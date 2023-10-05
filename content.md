@@ -120,13 +120,13 @@ We can actually go further with this shortening. Rather than saying
 
 when writing routes, we can replace that whole thing as 
 
-`get "/movies" => movies#create`. 
+`get "/movies" => "movies#create"`. 
 
 All we are doing here is passing a hash argument to the `get` method, and this hash is `{ "/movies" => "movies#create" }` (with the curly braces dropped because it is the last argument to the method).
 
 Remember, the `#` symbol is used to indicate an `Object#method`, which, in this example, is `MoviesController#create`. 
 
-We can go also go shorter for the homepage route at the URL path `/`. We can just write: `root movies#index`. `root` is a method provided by Rails to define the "homepage". It doesn't need a URL path, because the homepage is always `/`.
+We can go also go shorter for the homepage route at the URL path `/`. We can just write: `root "movies#index"`. `root` is a method provided by Rails to define the "homepage". It doesn't need a URL path, because the homepage is always `/`.
 
 Do this refactoring on your own for all of the routes.
 
